@@ -6,7 +6,7 @@ const WEBHOOK_URL = '';
 const SLACK_WEBHOOK_URL = '';
 // Optional: Google Apps Script web app URL (see README and google-apps-script/Code.gs).
 // Each lead is appended as a row to the bound Google Sheet.
-const GOOGLE_SHEET_URL = '';
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzEI22q8wm364DefQAAGID8-OwH2W5f-yZajqNfqEkEyleUb9nk98qaxZSY7gcW55J6UA/exec';
 const STORAGE_KEY = 'cognition_gartner_leads';
 const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'interest', 'notes'];
 
