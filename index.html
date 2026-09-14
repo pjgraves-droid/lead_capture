@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#F7F6F5" />
+  <title>Cognition at Gartner Symposium</title>
+  <link rel="icon" href="logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <img class="logo" src="logo.png" alt="Cognition" width="36" height="40" />
+      <p class="eyebrow">Gartner IT Symposium/Xpo 2026</p>
+      <h1>Meet Devin, the AI software engineer.</h1>
+      <p class="sub">Leave your details and we'll follow up with a personalized walkthrough for your team.</p>
+    </header>
+
+    <form id="lead-form" class="card" novalidate>
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" autocomplete="name" required placeholder="Ada Lovelace" />
+      </div>
+
+      <div class="field">
+        <label for="email">Work email</label>
+        <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="ada@company.com" />
+      </div>
+
+      <div class="field">
+        <label for="company">Company</label>
+        <input id="company" name="company" type="text" autocomplete="organization" required placeholder="Acme Corp" />
+      </div>
+
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" name="title" type="text" autocomplete="organization-title" placeholder="VP Engineering" />
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone <span class="opt">(optional)</span></label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+1 555 000 0000" />
+      </div>
+
+      <div class="field">
+        <label for="interest">What are you most interested in?</label>
+        <select id="interest" name="interest">
+          <option value="">Select one</option>
+          <option>Devin for enterprise engineering teams</option>
+          <option>Windsurf IDE</option>
+          <option>Legacy code migration / modernization</option>
+          <option>Security &amp; compliance</option>
+          <option>Just exploring</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="notes">Notes <span class="opt">(optional)</span></label>
+        <textarea id="notes" name="notes" rows="2" placeholder="Anything we should know?"></textarea>
+      </div>
+
+      <label class="check">
+        <input id="consent" name="consent" type="checkbox" required />
+        <span>I agree to be contacted by Cognition about its products.</span>
+      </label>
+
+      <button type="submit" class="btn">Submit</button>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <section id="thanks" class="card thanks" hidden>
+      <h2>Thanks, you're in.</h2>
+      <p>We'll be in touch shortly. Come find us at the booth for a live demo.</p>
+      <button id="another" class="btn secondary" type="button">Capture another lead</button>
+    </section>
+
+    <footer class="foot">
+      <img src="logo.png" alt="" width="14" height="16" />
+      <span id="count"></span>
+      <button id="export" class="link" type="button">Export CSV</button>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
