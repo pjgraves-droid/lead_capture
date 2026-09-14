@@ -156,25 +156,5 @@ input::placeholder, textarea::placeholder { color: rgba(25, 25, 25, 0.35); }
 
 .thanks p { margin: 0; color: var(--muted); }
 
-.foot {
-  margin-top: 32px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--muted);
-}
-.foot img { opacity: 0.6; }
-.link {
-  margin-left: auto;
-  font: inherit;
-  background: none;
-  border: 0;
-  padding: 0;
-  color: var(--accent);
-  text-decoration: underline dotted;
-  cursor: pointer;
-}
 
 [hidden] { display: none !important; }

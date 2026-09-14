@@ -1,5 +1,5 @@
 // Optional: set to a webhook URL (Zapier, Make, Google Apps Script, HubSpot form endpoint, etc.)
-// Leads are always saved locally in the browser and exportable as CSV, so the page works offline.
+// Leads are always saved locally in the browser, so the page works offline.
 const WEBHOOK_URL = '';
 // Optional: Slack Incoming Webhook URL (https://api.slack.com/messaging/webhooks).
 // Each lead is posted as a message to the channel the webhook is bound to.
@@ -13,16 +13,11 @@ const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'notes'];
 const form = document.getElementById('lead-form');
 const thanks = document.getElementById('thanks');
 const errorEl = document.getElementById('error');
-const countEl = document.getElementById('count');
 
 function loadLeads() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
 }
 function saveLeads(leads) { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
-function updateCount() {
-  const n = loadLeads().length;
-  countEl.textContent = n ? `${n} lead${n === 1 ? '' : 's'} saved on this device` : 'No leads saved yet';
-}
 
 function slackMessage(lead) {
   const line = (label, v) => (v ? `*${label}:* ${v}` : null);
@@ -76,7 +71,6 @@ form.addEventListener('submit', async (e) => {
   const leads = loadLeads();
   leads.push(data);
   saveLeads(leads);
-  updateCount();
 
   if (WEBHOOK_URL) {
     try {
@@ -112,18 +106,3 @@ document.getElementById('another').addEventListener('click', () => {
   form.hidden = false;
   form.elements.name.focus();
 });
-
-document.getElementById('export').addEventListener('click', () => {
-  const leads = loadLeads();
-  if (!leads.length) return;
-  const cols = ['submitted_at', 'event', ...FIELDS];
-  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const csv = [cols.join(','), ...leads.map((l) => cols.map((c) => esc(l[c])).join(','))].join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  a.download = `cognition-gartner-leads-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-
-updateCount();
