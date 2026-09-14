@@ -8,7 +8,7 @@ const SLACK_WEBHOOK_URL = '';
 // Each lead is appended as a row to the bound Google Sheet.
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzEI22q8wm364DefQAAGID8-OwH2W5f-yZajqNfqEkEyleUb9nk98qaxZSY7gcW55J6UA/exec';
 const STORAGE_KEY = 'cognition_gartner_leads';
-const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'interest', 'notes'];
+const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'notes'];
 
 const form = document.getElementById('lead-form');
 const thanks = document.getElementById('thanks');
@@ -28,7 +28,7 @@ function slackMessage(lead) {
   const line = (label, v) => (v ? `*${label}:* ${v}` : null);
   const fields = [
     line('Name', lead.name), line('Email', lead.email), line('Company', lead.company),
-    line('Title', lead.title), line('Phone', lead.phone), line('Interest', lead.interest),
+    line('Title', lead.title), line('Phone', lead.phone),
   ].filter(Boolean);
   const blocks = [
     { type: 'header', text: { type: 'plain_text', text: `New lead: ${lead.name} (${lead.company})` } },
