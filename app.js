@@ -1,6 +1,9 @@
 // Optional: set to a webhook URL (Zapier, Make, Google Apps Script, HubSpot form endpoint, etc.)
 // Leads are always saved locally in the browser and exportable as CSV, so the page works offline.
 const WEBHOOK_URL = '';
+// Optional: Slack Incoming Webhook URL (https://api.slack.com/messaging/webhooks).
+// Each lead is posted as a message to the channel the webhook is bound to.
+const SLACK_WEBHOOK_URL = '';
 const STORAGE_KEY = 'cognition_gartner_leads';
 const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'interest', 'notes'];
 
@@ -16,6 +19,26 @@ function saveLeads(leads) { localStorage.setItem(STORAGE_KEY, JSON.stringify(lea
 function updateCount() {
   const n = loadLeads().length;
   countEl.textContent = n ? `${n} lead${n === 1 ? '' : 's'} saved on this device` : 'No leads saved yet';
+}
+
+function slackMessage(lead) {
+  const line = (label, v) => (v ? `*${label}:* ${v}` : null);
+  const fields = [
+    line('Name', lead.name), line('Email', lead.email), line('Company', lead.company),
+    line('Title', lead.title), line('Phone', lead.phone), line('Interest', lead.interest),
+  ].filter(Boolean);
+  const blocks = [
+    { type: 'header', text: { type: 'plain_text', text: `New lead: ${lead.name} (${lead.company})` } },
+    { type: 'section', text: { type: 'mrkdwn', text: fields.join('\n') } },
+  ];
+  if (lead.notes) blocks.push({ type: 'section', text: { type: 'mrkdwn', text: `*Notes:*\n${lead.notes}` } });
+  blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: `${lead.event} · ${lead.submitted_at}` }] });
+  return { text: `New lead: ${lead.name} <${lead.email}> — ${lead.company}`, blocks };
+}
+
+async function postToSlack(lead) {
+  // No Content-Type header + no-cors keeps this a "simple" request, which Slack webhooks accept from a browser.
+  await fetch(SLACK_WEBHOOK_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(slackMessage(lead)) });
 }
 
 function showError(msg) { errorEl.textContent = msg; errorEl.hidden = false; }
@@ -52,6 +75,13 @@ form.addEventListener('submit', async (e) => {
       await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
     } catch (err) {
       console.warn('Webhook failed; lead kept locally.', err);
+    }
+  }
+  if (SLACK_WEBHOOK_URL) {
+    try {
+      await postToSlack(data);
+    } catch (err) {
+      console.warn('Slack post failed; lead kept locally.', err);
     }
   }
 
