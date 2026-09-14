@@ -4,6 +4,9 @@ const WEBHOOK_URL = '';
 // Optional: Slack Incoming Webhook URL (https://api.slack.com/messaging/webhooks).
 // Each lead is posted as a message to the channel the webhook is bound to.
 const SLACK_WEBHOOK_URL = '';
+// Optional: Google Apps Script web app URL (see README and google-apps-script/Code.gs).
+// Each lead is appended as a row to the bound Google Sheet.
+const GOOGLE_SHEET_URL = '';
 const STORAGE_KEY = 'cognition_gartner_leads';
 const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'interest', 'notes'];
 
@@ -39,6 +42,11 @@ function slackMessage(lead) {
 async function postToSlack(lead) {
   // No Content-Type header + no-cors keeps this a "simple" request, which Slack webhooks accept from a browser.
   await fetch(SLACK_WEBHOOK_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(slackMessage(lead)) });
+}
+
+async function postToSheet(lead) {
+  // no-cors (and no Content-Type header) avoids the preflight that Apps Script web apps can't answer.
+  await fetch(GOOGLE_SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(lead) });
 }
 
 function showError(msg) { errorEl.textContent = msg; errorEl.hidden = false; }
@@ -82,6 +90,13 @@ form.addEventListener('submit', async (e) => {
       await postToSlack(data);
     } catch (err) {
       console.warn('Slack post failed; lead kept locally.', err);
+    }
+  }
+  if (GOOGLE_SHEET_URL) {
+    try {
+      await postToSheet(data);
+    } catch (err) {
+      console.warn('Google Sheet post failed; lead kept locally.', err);
     }
   }
 
