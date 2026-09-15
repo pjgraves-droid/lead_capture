@@ -24,6 +24,18 @@ Uses a Google Apps Script web app bound to a sheet — no Slack app, server or A
 
 Each submission appends a row (header row is added automatically). If you edit `Code.gs` later, use **Deploy → Manage deployments → Edit → New version** so the same URL picks up the change.
 
+## Email attachments to each lead
+
+`Code.gs` also emails each submitter the PDFs in `assets/` (fetched from `SITE_URL`) via `MailApp`, sent from the Google account that deployed the script. The outcome is recorded in the sheet's `email_status` column.
+
+To enable after updating `Code.gs`:
+
+1. Paste the new `Code.gs` into the Apps Script editor and save. Check `SITE_URL` matches where the page is hosted.
+2. Run `testSendResources` once from the editor and accept the permission prompts (Gmail send + external URL fetch). You should receive the test email.
+3. **Deploy → Manage deployments → Edit → Version: New version → Deploy** so the live URL picks up the change.
+
+Quota: 100 emails/day for a personal Gmail account, 1,500/day for Google Workspace. Total attachment size must stay under ~25 MB. To change the PDFs, replace the files in `assets/` and update `ATTACHMENTS` in `Code.gs`.
+
 ## Files
 
 - `index.html`, `styles.css`, `app.js` - the page
