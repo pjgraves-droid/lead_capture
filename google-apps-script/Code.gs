@@ -4,6 +4,8 @@
 
 const COLUMNS = ['submitted_at', 'event', 'name', 'email', 'company', 'title', 'phone', 'interest', 'notes', 'email_status'];
 
+// Set true to email the PDFs from this script instead of the Vercel/Resend function (api/lead.js).
+const SEND_EMAIL = false;
 // Public base URL where the page (and /assets) is hosted.
 const SITE_URL = 'https://lead-capture-swart.vercel.app';
 const ATTACHMENTS = [
@@ -27,7 +29,7 @@ const EMAIL_BODY = [
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   const lead = JSON.parse(e.postData.contents);
-  lead.email_status = sendResources(lead.email);
+  lead.email_status = SEND_EMAIL ? sendResources(lead.email) : '';
   if (sheet.getLastRow() === 0) sheet.appendRow(COLUMNS);
   sheet.appendRow(COLUMNS.map((c) => lead[c] || ''));
   return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);

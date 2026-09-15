@@ -7,6 +7,8 @@ const SLACK_WEBHOOK_URL = '';
 // Optional: Google Apps Script web app URL (see README and google-apps-script/Code.gs).
 // Each lead is appended as a row to the bound Google Sheet.
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzEI22q8wm364DefQAAGID8-OwH2W5f-yZajqNfqEkEyleUb9nk98qaxZSY7gcW55J6UA/exec';
+// Optional: same-origin Vercel function that emails the lead the PDFs via Resend (see api/lead.js).
+const EMAIL_API_URL = '/api/lead';
 const STORAGE_KEY = 'cognition_leads';
 const FIELDS = ['email'];
 
@@ -82,6 +84,14 @@ form.addEventListener('submit', async (e) => {
       await postToSheet(data);
     } catch (err) {
       console.warn('Google Sheet post failed; lead kept locally.', err);
+    }
+  }
+  if (EMAIL_API_URL) {
+    try {
+      const r = await fetch(EMAIL_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: data.email }) });
+      if (!r.ok) console.warn('Email send failed', await r.text());
+    } catch (err) {
+      console.warn('Email send failed; lead kept locally.', err);
     }
   }
 
