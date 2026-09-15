@@ -103,8 +103,3 @@ form.addEventListener('submit', async (e) => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-document.getElementById('another').addEventListener('click', () => {
-  thanks.hidden = true;
-  form.hidden = false;
-  form.elements.email.focus();
-});
