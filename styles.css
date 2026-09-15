@@ -51,15 +51,6 @@ html, body {
 .hero { margin-bottom: 28px; }
 .logo { display: block; margin-bottom: 24px; }
 
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 12px;
-}
-
 h1, h2 {
   font-family: var(--sans);
   font-weight: 400;

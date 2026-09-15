@@ -1,4 +1,4 @@
-# Cognition lead capture (Gartner Symposium)
+# Cognition lead capture
 
 Static, mobile-first lead capture page. No build step, no dependencies.
 

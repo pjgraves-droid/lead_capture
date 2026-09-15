@@ -7,8 +7,8 @@ const SLACK_WEBHOOK_URL = '';
 // Optional: Google Apps Script web app URL (see README and google-apps-script/Code.gs).
 // Each lead is appended as a row to the bound Google Sheet.
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzEI22q8wm364DefQAAGID8-OwH2W5f-yZajqNfqEkEyleUb9nk98qaxZSY7gcW55J6UA/exec';
-const STORAGE_KEY = 'cognition_gartner_leads';
-const FIELDS = ['name', 'email', 'company', 'title', 'phone', 'notes'];
+const STORAGE_KEY = 'cognition_leads';
+const FIELDS = ['email'];
 
 const form = document.getElementById('lead-form');
 const thanks = document.getElementById('thanks');
@@ -20,18 +20,11 @@ function loadLeads() {
 function saveLeads(leads) { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
 
 function slackMessage(lead) {
-  const line = (label, v) => (v ? `*${label}:* ${v}` : null);
-  const fields = [
-    line('Name', lead.name), line('Email', lead.email), line('Company', lead.company),
-    line('Title', lead.title), line('Phone', lead.phone),
-  ].filter(Boolean);
   const blocks = [
-    { type: 'header', text: { type: 'plain_text', text: `New lead: ${lead.name} (${lead.company})` } },
-    { type: 'section', text: { type: 'mrkdwn', text: fields.join('\n') } },
+    { type: 'section', text: { type: 'mrkdwn', text: `*New lead:* ${lead.email}` } },
+    { type: 'context', elements: [{ type: 'mrkdwn', text: `${lead.event} · ${lead.submitted_at}` }] },
   ];
-  if (lead.notes) blocks.push({ type: 'section', text: { type: 'mrkdwn', text: `*Notes:*\n${lead.notes}` } });
-  blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: `${lead.event} · ${lead.submitted_at}` }] });
-  return { text: `New lead: ${lead.name} <${lead.email}> — ${lead.company}`, blocks };
+  return { text: `New lead: ${lead.email}`, blocks };
 }
 
 async function postToSlack(lead) {
@@ -52,17 +45,15 @@ form.addEventListener('submit', async (e) => {
   clearError();
   form.querySelectorAll('.invalid').forEach((el) => el.classList.remove('invalid'));
 
-  const data = { submitted_at: new Date().toISOString(), event: 'Gartner Symposium' };
+  const data = { submitted_at: new Date().toISOString(), event: 'Devin Max trial' };
   FIELDS.forEach((f) => { data[f] = form.elements[f].value.trim(); });
 
-  let firstInvalid = null;
-  for (const f of ['name', 'email', 'company']) {
-    if (!data[f]) { form.elements[f].classList.add('invalid'); firstInvalid ??= form.elements[f]; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    form.elements.email.classList.add('invalid');
+    showError('Please enter a valid work email.');
+    form.elements.email.focus();
+    return;
   }
-  if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    form.elements.email.classList.add('invalid'); firstInvalid ??= form.elements.email;
-  }
-  if (firstInvalid) { showError('Please fill in name, work email, and company.'); firstInvalid.focus(); return; }
   if (!form.elements.consent.checked) { showError('Please confirm you agree to be contacted.'); return; }
 
   const btn = form.querySelector('button[type=submit]');
@@ -104,5 +95,5 @@ form.addEventListener('submit', async (e) => {
 document.getElementById('another').addEventListener('click', () => {
   thanks.hidden = true;
   form.hidden = false;
-  form.elements.name.focus();
+  form.elements.email.focus();
 });
