@@ -149,5 +149,11 @@ input::placeholder, textarea::placeholder { color: rgba(25, 25, 25, 0.35); }
 
 .thanks p { margin: 0; color: var(--muted); }
 
+.downloads { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.downloads .btn {
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; text-decoration: none; box-sizing: border-box; padding: 12px 20px;
+}
+
 
 [hidden] { display: none !important; }

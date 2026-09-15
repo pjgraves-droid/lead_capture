@@ -8,7 +8,8 @@ const SLACK_WEBHOOK_URL = '';
 // Each lead is appended as a row to the bound Google Sheet.
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzEI22q8wm364DefQAAGID8-OwH2W5f-yZajqNfqEkEyleUb9nk98qaxZSY7gcW55J6UA/exec';
 // Optional: same-origin Vercel function that emails the lead the PDFs via Resend (see api/lead.js).
-const EMAIL_API_URL = '/api/lead';
+// Disabled: the PDFs are offered as downloads on the thank-you screen instead. Set to '/api/lead' to enable.
+const EMAIL_API_URL = '';
 const STORAGE_KEY = 'cognition_leads';
 const FIELDS = ['email'];
 
