@@ -24,9 +24,13 @@ Uses a Google Apps Script web app bound to a sheet — no Slack app, server or A
 
 Each submission appends a row (header row is added automatically). If you edit `Code.gs` later, use **Deploy → Manage deployments → Edit → New version** so the same URL picks up the change.
 
-## Email attachments to each lead (Resend, default)
+## PDF resources (default)
 
-`api/lead.js` is a Vercel serverless function. The page POSTs `{ email }` to `/api/lead` after saving the lead; the function fetches the PDFs in `assets/` from the same deployment and sends them via [Resend](https://resend.com).
+After submitting, the thank-you screen offers the two PDFs in `assets/` as direct downloads. No email is sent. The two email options below are available but disabled by default.
+
+## Email attachments to each lead (Resend, optional)
+
+Enable by setting `EMAIL_API_URL = '/api/lead'` in `app.js`. `api/lead.js` is a Vercel serverless function. The page POSTs `{ email }` to `/api/lead` after saving the lead; the function fetches the PDFs in `assets/` from the same deployment and sends them via [Resend](https://resend.com).
 
 Setup:
 
