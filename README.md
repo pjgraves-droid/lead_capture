@@ -24,9 +24,25 @@ Uses a Google Apps Script web app bound to a sheet — no Slack app, server or A
 
 Each submission appends a row (header row is added automatically). If you edit `Code.gs` later, use **Deploy → Manage deployments → Edit → New version** so the same URL picks up the change.
 
-## Email attachments to each lead
+## Email attachments to each lead (Resend, default)
 
-`Code.gs` also emails each submitter the PDFs in `assets/` (fetched from `SITE_URL`) via `MailApp`, sent from the Google account that deployed the script. The outcome is recorded in the sheet's `email_status` column.
+`api/lead.js` is a Vercel serverless function. The page POSTs `{ email }` to `/api/lead` after saving the lead; the function fetches the PDFs in `assets/` from the same deployment and sends them via [Resend](https://resend.com).
+
+Setup:
+
+1. Resend: verify your sending domain at https://resend.com/domains (add the DNS records shown). Until verified, Resend only delivers to the account owner's address.
+2. Resend: create an API key with *Sending access* at https://resend.com/api-keys.
+3. Vercel project → Settings → Environment Variables:
+   - `RESEND_API_KEY` (required)
+   - `EMAIL_FROM` e.g. `Cognition <hello@yourdomain.com>` (defaults to `onboarding@resend.dev`, which only works for test sends)
+   - `EMAIL_REPLY_TO` (optional)
+4. Redeploy. Check delivery in https://resend.com/emails.
+
+To edit the message or attachments, change `SUBJECT`/`TEXT`/`ATTACHMENTS` in `api/lead.js`. Set `EMAIL_API_URL = ''` in `app.js` to disable.
+
+## Email attachments via Apps Script (alternative)
+
+`Code.gs` can instead email the PDFs via `MailApp`, sent from the Google account that deployed the script. Set `SEND_EMAIL = true` in `Code.gs`; the outcome is recorded in the sheet's `email_status` column. Don't enable both.
 
 To enable after updating `Code.gs`:
 
